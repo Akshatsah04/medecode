@@ -4,6 +4,7 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const reportRoutes = require('./routes/reportRoutes');
 const authRoutes = require('./routes/authRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
 
 const app = express();
 
@@ -17,9 +18,10 @@ connectDB();
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/report', reportRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 app.get('/', (req, res) => {
-  res.send('MediExplain Backend is running.');
+  res.send('Medecode Backend is running.');
 });
 
 // Error handling middleware

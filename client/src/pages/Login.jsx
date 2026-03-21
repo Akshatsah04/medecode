@@ -30,7 +30,7 @@ export default function Login() {
   return (
     <div className="flex flex-col justify-center items-center min-h-[calc(100vh-80px)] px-4 relative">
       <div className="absolute top-4 left-4 md:top-8 md:left-8">
-        <Link to="/" className="flex items-center text-slate-400 hover:text-white transition-colors text-sm font-medium">
+        <Link to="/" className="flex items-center text-slate-500 hover:text-white transition-colors text-sm font-medium">
           <ArrowLeft className="w-5 h-5 mr-2" />
           Back to Home
         </Link>
@@ -43,7 +43,7 @@ export default function Login() {
           </div>
           Medecode
         </h1>
-        <p className="text-slate-400">Welcome back. Please login to your account.</p>
+        <p className="text-slate-500">Welcome back. Please login to your account.</p>
       </div>
 
       <div className="bg-cardBg p-8 rounded-2xl border border-slate-700 w-full max-w-md shadow-xl">
@@ -81,13 +81,13 @@ export default function Login() {
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full bg-primary hover:bg-blue-600 text-white font-medium py-3 rounded-lg transition-colors flex justify-center items-center shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="w-full bg-primary hover:bg-blue-600 text-white font-medium py-3 rounded-lg transition-colors flex justify-center items-center shadow-xl shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {loading ? 'Logging in...' : <><LogIn className="w-5 h-5 mr-2" /> Login</>}
           </button>
         </form>
 
-        <p className="text-slate-400 text-center mt-6 text-sm">
+        <p className="text-slate-500 text-center mt-6 text-sm">
           Don't have an account? <Link to="/register" className="text-primary hover:underline font-medium">Register here</Link>
         </p>
       </div>

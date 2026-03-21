@@ -69,4 +69,26 @@ const processReport = async (req, res) => {
   }
 };
 
-module.exports = { processReport, getHistory };
+// Add deleteReport
+const deleteReport = async (req, res) => {
+  try {
+    const report = await Report.findById(req.params.id);
+
+    if (!report) {
+      return res.status(404).json({ error: 'Report not found' });
+    }
+
+    // Ensure user owns the report
+    if (report.user && report.user.toString() !== req.user.id) {
+      return res.status(401).json({ error: 'Not authorized to delete this report' });
+    }
+
+    await Report.findByIdAndDelete(req.params.id);
+    return res.status(200).json({ message: 'Report removed' });
+  } catch (error) {
+    console.error('Delete report error:', error);
+    return res.status(500).json({ error: 'Server error deleting report' });
+  }
+};
+
+module.exports = { processReport, getHistory, deleteReport };

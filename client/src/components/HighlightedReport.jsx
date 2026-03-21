@@ -18,7 +18,7 @@ export default function HighlightedReport({ abnormalValues, language = 'English'
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {abnormalValues.map((item, index) => {
-          let statusColor = "bg-slate-700 text-slate-300 border-slate-600"; // fallback
+          let statusColor = "bg-slate-900 text-slate-300 border-slate-600"; // fallback
           
           const statusLower = item.status?.toLowerCase() || '';
 
@@ -42,13 +42,13 @@ export default function HighlightedReport({ abnormalValues, language = 'English'
               </div>
               <div className="flex flex-col text-sm opacity-90 mt-2 space-y-1">
                 <div className="flex justify-between">
-                  <span className="text-slate-400">{t.value}</span>
+                  <span className="text-slate-500">{t.value}</span>
                   <span className="font-medium text-white">
                     <HighlightText text={item.value} query={searchQuery} />
                   </span>
                 </div>
                 <div className="flex justify-between mt-1">
-                  <span className="text-slate-400">{t.normalRange}</span>
+                  <span className="text-slate-500">{t.normalRange}</span>
                   <span className="font-medium">
                     <HighlightText text={item.normalRange} query={searchQuery} />
                   </span>

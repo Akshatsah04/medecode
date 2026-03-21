@@ -1,22 +1,34 @@
-# Medecode – AI Medical Report Simplifier
+# Medecode – Premium AI Medical Report Analyst
 
-Medecode is a full-stack web application that allows users to upload medical reports (PDF or images), extracts the text using Optical Character Recognition (OCR), and uses AI (Google Gemini) to convert complex medical terminology into simple, patient-friendly explanations. 
+Medecode is a premium, full-stack web application that allows users to upload medical reports (PDF or images), extracts text using Optical Character Recognition (OCR), and uses advanced Generative AI (Google Gemini) to convert complex medical terminology into simple, actionable insights.
 
-## Features
-- **Strict Format JSON Reponses:** Fully structured AI outputs ensuring correct parsing.
-- **Robust Error Handling & Dummy Failovers:** App continues to work with intelligent fallback data if the AI API limits are hit or OCR fails.
-- **File Security Validations:** Only accepts specific Images and PDF documents.
-- **Explain Mode Toggles:** Choose between `Simple` and `Detailed` explanation structures.
-- **Advanced Highlighters:** Abnormal, normal, and borderline values are explicitly mapped and color-coded.
-- **Modern UI:** Built with Framer Motion, Tailwind CSS dark theme, and Lucide Icons for a premium look.
+## 📸 Platform Previews
+
+| The Premium UI | The Health Analytics Dashboard |
+| :---: | :---: |
+| ![Home Page](./docs/home.png) <br> *A highly responsive Split-Hero drag-and-drop landing interface.* | ![Dashboard](./docs/dashboard.png) <br> *Track recurring abnormalities natively with Recharts graphs.* |
+
+| Analysis Results | Secure Authentication |
+| :---: | :---: |
+| ![Results](./docs/results.png) <br> *Intelligent color-coded text highlighting based on severity.* | ![Register](./docs/register.png) <br> *Clean, centralized authentication component.* |
+
+## ✨ Core Features
+- **Intelligent Split-Hero UI:** Upload reports instantly via a dynamic drag-and-drop glassmorphic portal without navigating away.
+- **Enterprise-Grade Health Analytics:** A deeply customized Dashboard visualizing your health score trends and recurring abnormalities via Recharts and semantic semantic highlight styling.
+- **Strict Format JSON Responses:** Fully structured AI outputs ensuring correct parsing and bulletproof stability.
+- **Robust Error Handling & Fallbacks:** Seamless auto-failovers. The app intelligently maps down from `gemini-2.5-flash` to `gemini-1.5-flash` gracefully on rate limits or API fatigue.
+- **Advanced Highlighters & Search:** Abnormal, normal, and critical values are explicitly mapped and color-coded natively in your generated reports with a built-in search functionality.
+- **Secure Authentication:** JWT-based user session handling integrating distinct user profiles, alongside a rapid-access 'Guest Mode'.
+- **Historical Tracking:** Securely maintains a repository of all your past report summaries directly connected to your Mongo schemas.
+- **Multi-lingual Native Analysis:** Translate insights seamlessly with one click (English, Hindi, Bengali, Telugu, Marathi, Tamil) directly injected via customized API Prompts.
 
 ---
 
 ## 🏗️ Tech Stack
-- **Frontend:** React (Vite.js), Tailwind CSS, Axios, Framer Motion
-- **Backend:** Node.js, Express, Multer
+- **Frontend:** React (Vite.js), Tailwind CSS (Premium Themes), Recharts (Analytics), Axios, Lucide Icons, react-dropzone.
+- **Backend:** Node.js, Express, Multer, JWT, bcryptjs.
 - **Database:** MongoDB (Mongoose)
-- **AI/OCR:** Google Gemini API, Tesseract.js, pdf-parse
+- **AI/OCR Engine:** Google Gemini API (`@google/genai`), Tesseract.js, pdf-parse.
 
 ---
 
@@ -38,19 +50,19 @@ npm install
 
 **Install Frontend Dependencies:**
 ```bash
-cd ../client
+cd client
 npm install
 ```
 
 ### 2. Configure Environment Variables
-In the `server/` directory, create a `.env` file (one might already be partially configured) and ensure it has:
+In the `server/` directory, create a `.env` file containing:
 
 ```env
 PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/mediexplain
 GEMINI_API_KEY=your_actual_gemini_api_key_here
+JWT_SECRET=your_secure_jwt_secret_token
 ```
-*(Replace `your_actual_gemini_api_key_here` with your Google Gemini Key)*
 
 ### 3. Run the Application
 
@@ -73,5 +85,6 @@ Open your browser and navigate to `http://localhost:5173` to view the applicatio
 ---
 
 ## 🎯 Important Notes
-- Ensure your MongoDB connection works, otherwise the database connection might error out (though the UI processing will still work with dummy responses on server failure thanks to our robust fallback logic).
-- To test the OCR and AI, upload a screenshot or PDF of a sample blood test that includes terms like "Haemoglobin", "Blood Pressure", etc.
+- **Fallback Logic:** If your local MongoDB connection fails, the UI processing will still work by relying on our offline robust dummy-response fallbacks.
+- **Format Requirements:** Medical reports should be crisp images (JPG, PNG) or PDFs up to 10MB in size.
+- **Performance:** `tesseract.js` requires slight local computational processing. Wait about 3-10 seconds on heavy scans before the AI responds.

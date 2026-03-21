@@ -3,26 +3,108 @@ const fs = require('fs');
 
 const aiClient = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+const cleanJsonString = (str) => {
+  if (!str) return "";
+  return str.replace(/```json/gi, '').replace(/```/g, '').trim();
+};
+
+const isValidResponse = (jsonStr) => {
+  try {
+    const cleaned = cleanJsonString(jsonStr);
+    const data = JSON.parse(cleaned);
+    if (data.insight) return true;
+    if (data.summary && data.simplifiedExplanation && Array.isArray(data.abnormalValues)) return true;
+    return false;
+  } catch (e) {
+    return false;
+  }
+};
+
+const executeWithFallback = async (prompt, filePart = null) => {
+  // Pass strings directly if no file is present; otherwise, pass the array
+  const contents = filePart ? [prompt, filePart] : prompt;
+  const config = { responseMimeType: "application/json" };
+
+  try {
+    console.log("Using primary model");
+    const response = await aiClient.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents,
+      config
+    });
+    
+    const cleanedText = cleanJsonString(response.text);
+    if (isValidResponse(cleanedText)) {
+      return cleanedText;
+    } else {
+      throw new Error(`Invalid Output Format from primary: ${response.text}`);
+    }
+  } catch (error) {
+    const errStr = error.message || String(error);
+    console.log(`Primary failed, switching to fallback. Error: ${errStr}`);
+    
+    await delay(1500); 
+    
+      try {
+        console.log("Using fallback model");
+        const fallbackResponse = await aiClient.models.generateContent({
+          model: 'gemini-1.0-pro',
+          contents,
+          config
+        });
+      
+      const cleanedFallback = cleanJsonString(fallbackResponse.text);
+      if (isValidResponse(cleanedFallback)) {
+        return cleanedFallback;
+      } else {
+        throw new Error(`Invalid Output Format from fallback: ${fallbackResponse.text}`);
+      }
+    } catch (fallbackError) {
+      console.log(`Fallback failed, using dummy response. Error: ${fallbackError.message || String(fallbackError)}`);
+      throw new Error("Fallback failed.");
+    }
+  }
+};
+
 const getDummyResponse = () => {
   return {
-    summary: "This is a dummy summary. The AI service is currently unavailable.",
-    simplifiedExplanation: "The report indicates some values. This is a fallback explanation because the AI failed to process your exact report.",
-    abnormalValues: [
-      {
-        name: "Blood Pressure",
-        value: "150/90",
-        normalRange: "120/80",
-        status: "High"
-      },
-      {
-        name: "Heart Rate",
-        value: "75",
-        normalRange: "60-100",
-        status: "Normal"
-      }
-    ],
-    suggestions: "Please consult a doctor for a proper reading as this is dummy data."
+    summary: "Demo response",
+    simplifiedExplanation: "...",
+    abnormalValues: [],
+    suggestions: "Please consult a doctor."
   };
+};
+
+const getDummyInsight = () => {
+  return "You have had consistent trends in your health markers recently. Your most common abnormality appears to be related to general metrics. Ensure you maintain a balanced lifestyle and regularly consult your physician.";
+};
+
+const generateDashboardInsights = async (abnormalSummary, language = 'English') => {
+  if (!abnormalSummary || abnormalSummary.length === 0) {
+    return "No recurring abnormal patterns detected in your recent reports. Great job!";
+  }
+
+  try {
+    const summaryText = abnormalSummary.map(item => `${item.name}: occurred ${item.count} times`).join(", ");
+    const prompt = `
+You are a top-tier medical assistant AI. Summarize the following recurring abnormal health metrics found over a patient's historical medical reports into a concise, 2-sentence encouraging insight or warning. 
+Translate the final response into ${language.toUpperCase()}.
+
+Patient's most frequent abnormal metrics over their history:
+${summaryText}
+
+Return only the final 2-sentence text inside a JSON format under the key "insight". Example: { "insight": "Your response here" }
+`;
+
+    const responseText = await executeWithFallback(prompt);
+    const result = JSON.parse(responseText);
+    return result.insight || getDummyInsight();
+  } catch (error) {
+    console.error("Dashboard AI Insight Error:", error.message);
+    return getDummyInsight();
+  }
 };
 
 const analyzeReport = async (filePath, mimetype, mode = 'Simple', language = 'English') => {
@@ -67,22 +149,13 @@ Do not return anything outside JSON.
       }
     };
 
-    const response = await aiClient.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: [prompt, filePart],
-      config: {
-        responseMimeType: "application/json",
-      }
-    });
-
-    const resultText = response.text;
-    // The model with JSON config returns exact JSON, but just to be safe:
-    return JSON.parse(resultText);
+    const responseText = await executeWithFallback(prompt, filePart);
+    return JSON.parse(responseText);
   } catch (error) {
-    console.error("AI Analysis Error:", error);
+    console.error("AI Analysis Error:", error.message);
     console.log("Falling back to dummy response.");
     return getDummyResponse();
   }
 };
 
-module.exports = { analyzeReport, getDummyResponse };
+module.exports = { analyzeReport, getDummyResponse, generateDashboardInsights };

@@ -58,6 +58,16 @@ export const analyzeReport = async (file, mode = 'Simple', language = 'English')
   }
 };
 
+export const deleteReport = async (id) => {
+  try {
+    const response = await api.delete(`/report/${id}`);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 401) throw new Error('Session expired. Please log in again.');
+    throw new Error('Failed to delete report.');
+  }
+};
+
 export const getHistory = async () => {
   try {
     const response = await api.get('/report/history');
@@ -65,5 +75,15 @@ export const getHistory = async () => {
   } catch (error) {
     if (error.response && error.response.status === 401) throw new Error('Session expired. Please log in again.');
     throw new Error('Failed to fetch history.');
+  }
+};
+
+export const getDashboardData = async (language = 'English') => {
+  try {
+    const response = await api.get(`/dashboard?language=${language}`);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 401) throw new Error('Session expired. Please log in again.');
+    throw new Error('Failed to load analytical dashboard.');
   }
 };
