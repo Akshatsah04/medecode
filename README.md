@@ -1,6 +1,6 @@
-# MediExplain – AI Medical Report Simplifier
+# Medecode – AI Medical Report Simplifier
 
-MediExplain is a full-stack web application that allows users to upload medical reports (PDF or images), extracts the text using Optical Character Recognition (OCR), and uses AI (Google Gemini) to convert complex medical terminology into simple, patient-friendly explanations. 
+Medecode is a full-stack web application that allows users to upload medical reports (PDF or images), extracts the text using Optical Character Recognition (OCR), and uses AI (Google Gemini) to convert complex medical terminology into simple, patient-friendly explanations. 
 
 ## Features
 - **Strict Format JSON Reponses:** Fully structured AI outputs ensuring correct parsing.
