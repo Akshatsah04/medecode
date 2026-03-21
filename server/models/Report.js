@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const reportSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: false,
+    ref: 'User',
+  },
   originalText: {
     type: String,
     required: true,

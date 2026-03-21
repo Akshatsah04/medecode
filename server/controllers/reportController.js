@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const getHistory = async (req, res) => {
   try {
-    const history = await Report.find().sort({ createdAt: -1 });
+    const history = await Report.find({ user: req.user.id }).sort({ createdAt: -1 });
     res.status(200).json(history);
   } catch (error) {
     console.error("Error fetching history:", error);
@@ -41,13 +41,20 @@ const processReport = async (req, res) => {
     // 2. Save to database
     let newReport;
     try {
-      newReport = new Report({
+      const reportData = {
         originalText: "Processed natively via Gemini Multimodal API",
         summary: analysisResult.summary,
         simplifiedExplanation: analysisResult.simplifiedExplanation,
         abnormalValues: analysisResult.abnormalValues || [],
         suggestions: analysisResult.suggestions
-      });
+      };
+      
+      // Conditionally attach user ID if signed in
+      if (req.user) {
+        reportData.user = req.user.id;
+      }
+      
+      newReport = new Report(reportData);
       await newReport.save();
     } catch (dbError) {
       console.error("Database save failed: ", dbError);

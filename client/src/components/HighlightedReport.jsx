@@ -2,8 +2,9 @@ import { Activity } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { translations } from '../utils/translations';
+import HighlightText from './HighlightText';
 
-export default function HighlightedReport({ abnormalValues, language = 'English' }) {
+export default function HighlightedReport({ abnormalValues, language = 'English', searchQuery = '' }) {
   const t = translations[language];
 
   if (!abnormalValues || abnormalValues.length === 0) return null;
@@ -32,7 +33,9 @@ export default function HighlightedReport({ abnormalValues, language = 'English'
           return (
             <div key={index} className={twMerge(clsx("p-4 rounded-xl border", statusColor))}>
               <div className="flex justify-between items-start mb-2 gap-2">
-                <span className="font-semibold break-words">{item.name}</span>
+                <span className="font-semibold break-words">
+                  <HighlightText text={item.name} query={searchQuery} />
+                </span>
                 <span className="text-xs font-bold uppercase px-2 py-1 rounded bg-black/20 whitespace-nowrap">
                   {item.status}
                 </span>
@@ -40,11 +43,15 @@ export default function HighlightedReport({ abnormalValues, language = 'English'
               <div className="flex flex-col text-sm opacity-90 mt-2 space-y-1">
                 <div className="flex justify-between">
                   <span className="text-slate-400">{t.value}</span>
-                  <span className="font-medium text-white">{item.value}</span>
+                  <span className="font-medium text-white">
+                    <HighlightText text={item.value} query={searchQuery} />
+                  </span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between mt-1">
                   <span className="text-slate-400">{t.normalRange}</span>
-                  <span className="font-medium">{item.normalRange}</span>
+                  <span className="font-medium">
+                    <HighlightText text={item.normalRange} query={searchQuery} />
+                  </span>
                 </div>
               </div>
             </div>

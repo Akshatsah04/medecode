@@ -1,7 +1,8 @@
 import { Stethoscope, AlertCircle, CheckCircle } from 'lucide-react';
 import { translations } from '../utils/translations';
+import HighlightText from './HighlightText';
 
-export default function ResultCard({ result, language = 'English' }) {
+export default function ResultCard({ result, language = 'English', searchQuery = '' }) {
   const t = translations[language];
 
   if (!result) return null;
@@ -16,7 +17,7 @@ export default function ResultCard({ result, language = 'English' }) {
           {t.summary}
         </h3>
         <p className="text-slate-300 leading-relaxed text-sm">
-          {result.summary}
+          <HighlightText text={result.summary} query={searchQuery} />
         </p>
       </div>
 
@@ -29,7 +30,7 @@ export default function ResultCard({ result, language = 'English' }) {
           {t.simplifiedExplanation}
         </h3>
         <p className="text-slate-300 leading-relaxed text-sm whitespace-pre-line">
-          {result.simplifiedExplanation}
+          <HighlightText text={result.simplifiedExplanation} query={searchQuery} />
         </p>
       </div>
 
