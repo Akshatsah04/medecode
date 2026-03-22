@@ -14,11 +14,22 @@ export default function Loader({ language = 'English' }) {
 
   const [currentStep, setCurrentStep] = useState(0);
 
+  const [isRenderColdStart, setIsRenderColdStart] = useState(false);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentStep((prev) => (prev < steps.length - 1 ? prev + 1 : prev));
-    }, 2500); // changes every 2.5s
-    return () => clearInterval(interval);
+    }, 4000); // 4s interval to map Render cold-boot sequence elegantly
+    
+    // Explicit UX warning for Render's 50s free-tier delays
+    const coldStartWarning = setTimeout(() => {
+      setIsRenderColdStart(true);
+    }, 12000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(coldStartWarning);
+    };
   }, []);
 
   return (
@@ -33,6 +44,16 @@ export default function Loader({ language = 'English' }) {
       >
         {steps[currentStep]}
       </motion.p>
+      
+      {isRenderColdStart && (
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-sm text-slate-500 max-w-sm text-center pt-4"
+        >
+          Connecting to secure server... <br className="hidden sm:block" /> (Server may take ~50s to wake up if inactive)
+        </motion.p>
+      )}
     </div>
   );
 }
