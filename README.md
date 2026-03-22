@@ -2,6 +2,9 @@
 
 Medecode is a premium, full-stack web application that allows users to upload medical reports (PDF or images), extracts text using Optical Character Recognition (OCR), and uses advanced Generative AI (Google Gemini) to convert complex medical terminology into simple, actionable insights.
 
+## 🚀 Live Access
+- **[Try Medecode Live on Vercel](https://medecode-rho.vercel.app/)**
+
 ## 🎥 Live Demonstration
 - **[Watch the full demo on YouTube](https://youtu.be/jJ_qTsopwYo?si=G1JabtCRUfApU6Nh)**
 - **[Access the Video via Google Drive](https://drive.google.com/drive/folders/1VODhCCJd1x-taXftv5hj6gTekx1gXnPA?usp=sharing)**
